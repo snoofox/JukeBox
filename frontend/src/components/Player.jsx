@@ -39,6 +39,7 @@ const Player = () => {
         }
         setIsPlaying(!isPlaying);
     };
+
     const handleTimeUpdate = () => {
         setCurrentTime(audioRef.current.currentTime);
         setDuration(audioRef.current.duration);
@@ -47,6 +48,7 @@ const Player = () => {
     const handleLoadMetadata = () => {
         setCurrentTime(audioRef.current.currentTime);
         setDuration(audioRef.current.duration);
+
         if (userInteracted === true) {
             setIsPlaying(true)
             audioRef.current.play();
@@ -54,17 +56,11 @@ const Player = () => {
     }
 
     const handleSkipForward = () => {
-        const nextSongIndex = (currentSongIndex + 1) % songs.length;
-        setCurrentSongIndex(nextSongIndex);
-        setIsPlaying(false);
-        setCurrentTime(0);
+        setCurrentTime(audioRef.current.currentTime += 10);
     };
 
     const handleSkipBack = () => {
-        const prevSongIndex = currentSongIndex === 0 ? songs.length - 1 : currentSongIndex - 1;
-        setCurrentSongIndex(prevSongIndex);
-        setIsPlaying(false);
-        setCurrentTime(0);
+        setCurrentTime(audioRef.current.currentTime -= 10);
     };
 
     const handleSliderChange = (value) => {
@@ -73,8 +69,16 @@ const Player = () => {
     };
 
     const handleEnded = () => {
+        const nextSongIndex = (currentSongIndex + 1) % songs.length;
+        console.log(nextSongIndex)
+
+        if (nextSongIndex) {
+            setCurrentSongIndex(nextSongIndex);
+            setCurrentTime(0);
+        } else {
+            audioRef.current.pause();
+        }
         setIsPlaying(false);
-        setCurrentTime(0);
     };
 
     const formatTime = (seconds) => {
